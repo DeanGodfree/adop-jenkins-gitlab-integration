@@ -25,7 +25,7 @@ if (!password) {
 def instance = Jenkins.getInstance()
 
 Thread.start {
-    sleep 15000
+    sleep 9000
 
     def credentialDescription = "Gitlab Administrator Credentials"
     def credentialsId = "gitlab-admin-credentials"

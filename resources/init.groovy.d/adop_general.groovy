@@ -169,7 +169,7 @@ Thread.start {
     if(!ssh_credentials_file_exist) {
 
         def ssh_key_domain = com.cloudbees.plugins.credentials.domains.Domain.global()
-        def ssh_key_file = new FileCredentialsImpl(ssh_key_scope, ssh_key_file_id, ssh_key_file_description, fileItem, null, null)
+        def ssh_key_file = new FileCredentialsImpl(ssh_key_scope, ssh_key_file_id, ssh_key_file_description, fileItem, null, "")
 
         system_credentials_provider.addCredentials(ssh_key_domain,ssh_key_file)
     }
