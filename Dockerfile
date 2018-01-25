@@ -26,11 +26,12 @@ RUN chmod +x -R /usr/share/jenkins/ref/adop_scripts/ && chmod +x /entrypoint.sh
 # Environment variables
 ENV ADOP_LDAP_ENABLED=true \
     ADOP_ACL_ENABLED=true \
-    ADOP_SONAR_ENABLED=true \
+    ADOP_SONAR_ENABLED=false \
     ADOP_ANT_ENABLED=true \
     ADOP_MAVEN_ENABLED=true \
-    ADOP_NODEJS_ENABLED=true \
-    ADOP_GERRIT_ENABLED=true
+    ADOP_NODEJS_ENABLED=false \
+    ADOP_GERRIT_ENABLED=false
+ENV JAVA_OPTS="-Dpermissive-script-security.enabled=true"
 ENV LDAP_GROUP_NAME_ADMIN=""
 ENV JENKINS_OPTS="--prefix=/jenkins -Djenkins.install.runSetupWizard=false"
 ENV PLUGGABLE_SCM_PROVIDER_PROPERTIES_PATH="/var/jenkins_home/userContent/datastore/pluggable/scm"
