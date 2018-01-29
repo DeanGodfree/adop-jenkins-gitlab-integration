@@ -1,5 +1,5 @@
 pipeline-model-definition:1.2.5
-pipeline-model-extensions:latest
+pipeline-model-extensions:1.2.6
 greenballs:latest
 docker-build-step:latest
 copyartifact:latest
