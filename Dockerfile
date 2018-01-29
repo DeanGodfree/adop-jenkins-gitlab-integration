@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.73.1
+FROM jenkins/jenkins:2.73.3
 
 LABEL maintainer="Bryan Sazon <john.bryan.j.sazon@accenture.com>"
 
