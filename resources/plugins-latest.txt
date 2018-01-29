@@ -1,3 +1,4 @@
+pipeline-model-definition:1.2.5
 greenballs:latest
 docker-build-step:latest
 copyartifact:latest
