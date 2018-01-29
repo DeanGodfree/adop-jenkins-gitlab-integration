@@ -4,10 +4,10 @@
   <description></description>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.4.8">
-      <gitLabConnection>ADOP Gitlab</gitLabConnection>
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.0">
+      <gitLabConnection></gitLabConnection>
     </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
-    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.27">
       <autoRebuild>false</autoRebuild>
       <rebuildDisabled>false</rebuildDisabled>
     </com.sonyericsson.rebuild.RebuildSettings>
@@ -16,7 +16,7 @@
         <hudson.model.StringParameterDefinition>
           <name>GIT_URL</name>
           <description>The URL of the git repo for Platform Management.</description>
-          <defaultValue>https://github.com/pdcbuckets/adop-gitlab-load-platform/</defaultValue>
+          <defaultValue>ssh://git@innersource.accenture.com/pdcbuc/adop-gitlab-load-platform.git</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>GIT_REF</name>
@@ -39,7 +39,7 @@
     </hudson.model.ParametersDefinitionProperty>
     <de.pellepelster.jenkins.walldisplay.WallDisplayJobProperty plugin="jenkinswalldisplay@0.6.34"/>
   </properties>
-  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.6.0">
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.6.4">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
@@ -86,26 +86,28 @@ chmod +x ${WORKSPACE}/common/utils/install_jq.sh
 ${WORKSPACE}/common/utils/install_jq.sh
 export PATH=&quot;$PATH:$HOME/bin&quot;
 
+######
+# GITLAB V4 API for /session endpoint is already deprecated!
+######
+#curl -X POST &quot;${GITLAB_HTTP_URL}/api/v4/session?login=${GITLAB_USER}&amp;password=${GITLAB_PASSWORD}&quot; | jq &apos;.&apos;
 
-curl -X POST &quot;${GITLAB_HTTP_URL}/api/v4/session?login=${GITLAB_USER}&amp;password=${GITLAB_PASSWORD}&quot; | jq &apos;.&apos;
+#echo &quot;Getting the Gitlab token&quot;
+#get_response=$(curl -I -X POST &quot;${GITLAB_HTTP_URL}/api/v4/session?login=${GITLAB_USER}&amp;password=${GITLAB_PASSWORD}&quot;)
+#response=$(echo $get_response | head -1 | awk &apos;{print $2}&apos;)
 
-echo &quot;Getting the Gitlab token&quot;
-get_response=$(curl -I -X POST &quot;${GITLAB_HTTP_URL}/api/v4/session?login=${GITLAB_USER}&amp;password=${GITLAB_PASSWORD}&quot;)
-response=$(echo $get_response | head -1 | awk &apos;{print $2}&apos;)
+#echo $get_response
 
-echo $get_response
+#if [[ $response -ne 201 ]]; then
+#	echo &quot;$GITLAB_USER is unauthorized to access ${GITLAB_HTTP_URL}/api/v4/&quot;
+#    exit 1
+#fi
 
-if [[ $response -ne 201 ]]; then
-	echo &quot;$GITLAB_USER is unauthorized to access ${GITLAB_HTTP_URL}/api/v4/&quot;
-    exit 1
-fi
+#GITLAB_TOKEN=$(curl -X POST &quot;${GITLAB_HTTP_URL}/api/v4/session?login=${GITLAB_USER}&amp;password=${GITLAB_PASSWORD}&quot; | jq &apos;.private_token&apos; | tr -d &apos;&quot;&apos;)
 
-GITLAB_TOKEN=$(curl -X POST &quot;${GITLAB_HTTP_URL}/api/v4/session?login=${GITLAB_USER}&amp;password=${GITLAB_PASSWORD}&quot; | jq &apos;.private_token&apos; | tr -d &apos;&quot;&apos;)
-
-if [[ $GITLAB_TOKEN -ne &quot;null&quot; || -z $GITLAB_TOKEN ]]; then
-	echo &quot;Token is null&quot;
-    exit 1
-fi
+#if [[ $GITLAB_TOKEN -ne &quot;null&quot; || -z $GITLAB_TOKEN ]]; then
+#	echo &quot;Token is null&quot;
+#    exit 1
+#fi
 
 echo &quot;Adding ssh key&quot;
 key=$(cat ~/.ssh/id_rsa.pub)
@@ -199,6 +201,10 @@ rm -f /tmp/gitlab_token_file /tmp/sonar_token_file</command>
           <usernameVariable>GITLAB_USER</usernameVariable>
           <passwordVariable>GITLAB_PASSWORD</passwordVariable>
         </org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordMultiBinding>
+        <org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+          <credentialsId>gitlab-secrets-id</credentialsId>
+          <variable>GITLAB_TOKEN</variable>
+        </org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
       </bindings>
     </org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
   </buildWrappers>
