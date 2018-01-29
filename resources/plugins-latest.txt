@@ -135,3 +135,4 @@ pipeline-utility-steps:latest
 blueocean:latest
 gradle:latest
 permissive-script-security:latest
+audit-trail:latest
